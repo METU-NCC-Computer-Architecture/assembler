@@ -1,0 +1,8 @@
+addi $r0, $r7, 12 # Hello
+LOOP1:
+lw $r1, $r0, -12
+LOOP2:
+LOOP3:
+add $r0, $r1, $r2
+dmaddr 2
+jump LOOP2

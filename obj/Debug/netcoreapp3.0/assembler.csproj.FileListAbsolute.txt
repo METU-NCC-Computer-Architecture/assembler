@@ -1,0 +1,11 @@
+D:\Github\METU-NCC-Computer-Architecture\assembler\bin\Debug\netcoreapp3.0\assembler.exe
+D:\Github\METU-NCC-Computer-Architecture\assembler\bin\Debug\netcoreapp3.0\assembler.deps.json
+D:\Github\METU-NCC-Computer-Architecture\assembler\bin\Debug\netcoreapp3.0\assembler.runtimeconfig.json
+D:\Github\METU-NCC-Computer-Architecture\assembler\bin\Debug\netcoreapp3.0\assembler.runtimeconfig.dev.json
+D:\Github\METU-NCC-Computer-Architecture\assembler\bin\Debug\netcoreapp3.0\assembler.dll
+D:\Github\METU-NCC-Computer-Architecture\assembler\bin\Debug\netcoreapp3.0\assembler.pdb
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.csprojAssemblyReference.cache
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.AssemblyInfoInputs.cache
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.AssemblyInfo.cs
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.dll
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.pdb
