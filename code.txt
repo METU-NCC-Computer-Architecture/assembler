@@ -1,8 +1,5 @@
-addi $r0, $r7, 12 # Hello
-LOOP1:
-lw $r1, $r0, -12
-LOOP2:
-LOOP3:
-add $r0, $r1, $r2
-dmaddr 2
-jump LOOP2
+addi $r0, $r0, 12
+addi $r1, $r1, 23
+addi $r2, $r2, 24
+sw $r1, $r0, 0 
+lw $r3, $r0, 0

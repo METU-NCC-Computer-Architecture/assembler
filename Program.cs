@@ -55,8 +55,6 @@ namespace assembler
                 
             }
 
-
-
             Console.WriteLine($"Word Address: {Position}");
             Console.WriteLine($"Machine Code: {Binary_MachineCode}");
             Console.WriteLine("-------------------------------------------");
@@ -212,6 +210,28 @@ namespace assembler
         public void Print()
         {
             Console.WriteLine($"{Name} @ {Instruction_Position}");
+        }
+    }
+
+    public class Datapath
+    {
+        Dictionary<string, string>BinaryRegisters = new Dictionary<string, string>
+            {
+                { "$R0", "000"},
+                { "$R1", "001"},
+                { "$R2", "010"},
+                { "$R3", "011"},
+                { "$R4", "100"},
+                { "$R5", "101"},
+                { "$R6", "110"},
+                { "$R7", "111"}
+            };
+
+        public int Program_Counter { get; set; }
+
+        public void Next()
+        {
+            
         }
     }
 
