@@ -9,3 +9,5 @@ D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assem
 D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.AssemblyInfo.cs
 D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.dll
 D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.pdb
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.csproj.CoreCompileInputs.cache
+D:\Github\METU-NCC-Computer-Architecture\assembler\obj\Debug\netcoreapp3.0\assembler.genruntimeconfig.cache

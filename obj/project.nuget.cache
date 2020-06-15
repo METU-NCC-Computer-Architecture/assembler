@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "IhZHApGCsu78TE0J6jFk3gXUgO3h7slsmojWMuv0lRDuou1b4d65byDFKwmC2vlQE6ASVG+JC6u/IKT3Hn7WbQ==",
+  "success": true,
+  "projectFilePath": "D:\\Github\\METU-NCC-Computer-Architecture\\assembler\\assembler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\DogukanArat\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.0.1\\microsoft.aspnetcore.app.ref.3.0.1.nupkg.sha512",
+    "C:\\Users\\DogukanArat\\.nuget\\packages\\microsoft.netcore.app.ref\\3.0.0\\microsoft.netcore.app.ref.3.0.0.nupkg.sha512",
+    "C:\\Users\\DogukanArat\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.0.3\\microsoft.netcore.app.host.win-x64.3.0.3.nupkg.sha512",
+    "C:\\Users\\DogukanArat\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.0.0\\microsoft.windowsdesktop.app.ref.3.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -9,6 +9,9 @@ namespace assembler
         public static List<Instruction> Instructions = new List<Instruction>();
         public static List<Label> Labels = new List<Label>();
         public static List<string> Instruction_Content = new List<string>();
+        public static bool Assemble_Error;
+        public static int Average_CPI;
+        public static int Num_Of_Instructions;
     }
     public class Instruction
     {
@@ -17,6 +20,7 @@ namespace assembler
         public string Source_One { get; set; }
         public string Source_Two { get; set; }
         public int Position { get; set; }
+        public int CPI { get; set; }
         public string Binary_Opcode { get; set; }
         public string Binary_Destination { get; set; }
         public string Binary_Source_One { get; set; }
@@ -55,6 +59,7 @@ namespace assembler
                 
             }
 
+            Console.WriteLine($"CPI: {CPI}");
             Console.WriteLine($"Word Address: {Position}");
             Console.WriteLine($"Machine Code: {Binary_MachineCode}");
             Console.WriteLine("-------------------------------------------");
@@ -62,7 +67,9 @@ namespace assembler
 
         public void Encode()
         {
-            var Types = new Dictionary<string, string> {
+            try
+            {
+                var Types = new Dictionary<string, string> {
                 { "ADD", "R"},
                 { "ADDI", "I"},
                 { "SUB", "R" },
@@ -86,9 +93,35 @@ namespace assembler
                 { "BREQ", "I" },
                 { "BRNE", "I" },
                 { "JUMP", "J" }
-            };
+                };
 
-            var BinaryOpcodes = new Dictionary<string, string> {
+                var CPI = new Dictionary<string, int> {
+                { "ADD", 4},
+                { "ADDI", 4},
+                { "SUB", 4},
+                { "AND", 4},
+                { "ANDI", 4},
+                { "OR", 4},
+                { "DMADDR", 4},
+                { "XOR", 4},
+                { "SLT", 4},
+                { "MUL", 14},
+                { "DIV", 16},
+                { "SLL", 3},
+                { "SRL", 3},
+                { "SRA", 3},
+                { "LW", 5},
+                { "LWU", 4},
+                { "LWL", 4},
+                { "SW", 5},
+                { "SWU", 4},
+                { "SWL", 4},
+                { "BREQ", 4},
+                { "BRNE", 4},
+                { "JUMP", 4}
+                };
+
+                var BinaryOpcodes = new Dictionary<string, string> {
                 { "ADD", "0000"},
                 { "ADDI", "0001"},
                 { "SUB", "0000" },
@@ -112,9 +145,9 @@ namespace assembler
                 { "BREQ", "1101" },
                 { "BRNE", "1110" },
                 { "JUMP", "1111" }
-            };
+                };
 
-            var BinaryFunctions = new Dictionary<string, string> {
+                var BinaryFunctions = new Dictionary<string, string> {
                 { "ADD", "000"},
                 { "SUB", "001" },
                 { "AND", "100" },
@@ -123,10 +156,10 @@ namespace assembler
                 { "SLT", "101"},
                 { "MUL", "010" },
                 { "DIV", "111" },
-            };
+                };
 
-            var BinaryRegisters = new Dictionary<string, string>
-            {
+                var BinaryRegisters = new Dictionary<string, string>
+                {
                 { "$R0", "000"},
                 { "$R1", "001"},
                 { "$R2", "010"},
@@ -135,65 +168,95 @@ namespace assembler
                 { "$R5", "101"},
                 { "$R6", "110"},
                 { "$R7", "111"}
-            };
+                };
 
-            this.Type = Types[Opcode];
-            this.Binary_Opcode = BinaryOpcodes[Opcode];
+                this.Type = Types[Opcode];
+                this.Binary_Opcode = BinaryOpcodes[Opcode];
+                this.CPI = CPI[Opcode];
 
-            if (this.Type == "R")
-            {
-                this.Binary_Function = BinaryFunctions[Opcode];
-                this.Binary_Destination = BinaryRegisters[this.Destination];
-                this.Binary_Source_One = BinaryRegisters[this.Source_One];
-                this.Binary_Source_Two = BinaryRegisters[this.Source_Two];
-
-                this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Destination + this.Binary_Source_One + this.Binary_Source_Two + this.Binary_Function;
-            }
-            if (this.Type == "I")
-            {
-                this.Binary_Destination = BinaryRegisters[this.Destination];
-                this.Binary_Source_One = BinaryRegisters[this.Source_One];
-                this.Binary_Constant = Convert.ToString(Convert.ToInt32(this.Source_Two), 2).PadLeft(6, '0');
-
-                if (this.Binary_Constant.Length > 6)
+                if (this.Type == "R")
                 {
-                    this.Binary_Constant = this.Binary_Constant.Substring(this.Binary_Constant.Length - 6);
+                    this.Binary_Function = BinaryFunctions[Opcode];
+                    this.Binary_Destination = BinaryRegisters[this.Destination];
+                    this.Binary_Source_One = BinaryRegisters[this.Source_One];
+                    this.Binary_Source_Two = BinaryRegisters[this.Source_Two];
+
+                    this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Destination + this.Binary_Source_One + this.Binary_Source_Two + this.Binary_Function;
                 }
-
-                this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Destination + this.Binary_Source_One + this.Binary_Constant;
-            }
-
-            if (this.Type == "J")
-            {
-                if(this.Opcode == "JUMP")
+                if (this.Type == "I")
                 {
-                    foreach (Label label in Content.Labels)
+                    if (this.Opcode == "BREQ" || this.Opcode == "BRNE")
                     {
+                        this.Binary_Destination = BinaryRegisters[this.Destination];
+                        this.Binary_Source_One = BinaryRegisters[this.Source_One];
 
-                        if (label.Name == this.Source_Two)
+                        foreach (Label label in Content.Labels)
                         {
-                            this.Binary_Constant = Convert.ToString(label.Instruction_Position, 2).PadLeft(12, '0');
+
+                            if (label.Name == this.Source_Two)
+                            {
+                                int Offset = label.Instruction_Position - this.Position - 2;
+                                this.Binary_Constant = Convert.ToString(Offset, 2).PadLeft(6, '0');
+                            }
                         }
+
                     }
-
-                    this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Constant;
-                } 
-                else
-                {
-                    this.Binary_Constant = Convert.ToString(Convert.ToInt32(this.Source_Two), 2).PadLeft(12, '0');
-
-                    if (this.Binary_Constant.Length > 12)
+                    else
                     {
-                        this.Binary_Constant = this.Binary_Constant.Substring(this.Binary_Constant.Length - 12);
+                        this.Binary_Destination = BinaryRegisters[this.Destination];
+                        this.Binary_Source_One = BinaryRegisters[this.Source_One];
+                        this.Binary_Constant = Convert.ToString(Convert.ToInt32(this.Source_Two), 2).PadLeft(6, '0');
+
                     }
 
-                    this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Constant;
+
+
+                    if (this.Binary_Constant.Length > 6)
+                    {
+                        this.Binary_Constant = this.Binary_Constant.Substring(this.Binary_Constant.Length - 6);
+                    }
+
+                    this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Destination + this.Binary_Source_One + this.Binary_Constant;
+                }
+
+                if (this.Type == "J")
+                {
+                    if (this.Opcode == "JUMP")
+                    {
+                        foreach (Label label in Content.Labels)
+                        {
+
+                            if (label.Name == this.Source_Two)
+                            {
+                                this.Binary_Constant = Convert.ToString(label.Instruction_Position, 2).PadLeft(12, '0');
+                            }
+                        }
+
+                        this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Constant;
+                    }
+                    else
+                    {
+                        this.Binary_Constant = Convert.ToString(Convert.ToInt32(this.Source_Two), 2).PadLeft(12, '0');
+
+                        if (this.Binary_Constant.Length > 12)
+                        {
+                            this.Binary_Constant = this.Binary_Constant.Substring(this.Binary_Constant.Length - 12);
+                        }
+
+                        this.Binary_MachineCode = this.Binary_Opcode + this.Binary_Constant;
+
+                    }
+
 
                 }
-                
 
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine("Error occured. {0} Exception caught.", e);
+                Content.Assemble_Error = true;
+            }
+            
         }
 
         public string Get_MachineCode()
@@ -330,9 +393,19 @@ namespace assembler
                     {
                         instruction.Encode();
                         instruction.Print();
+                        Content.Average_CPI += instruction.CPI;
                         Content.Instruction_Content.Add(instruction.Get_MachineCode());
                     }
-                    
+
+                    Content.Num_Of_Instructions = Content.Instructions.Count;
+                    Content.Average_CPI /= Content.Num_Of_Instructions;
+
+                    Console.WriteLine("----------------------------------------------------");
+                    Console.WriteLine("Assemble Report:");
+                    Console.WriteLine("Error Occured: {0}", Content.Assemble_Error);
+                    Console.WriteLine("Number of Instruction: {0}", Content.Num_Of_Instructions);
+                    Console.WriteLine("Average CPI: {0}", Content.Average_CPI);
+
                 }
 
                 if(command == "convert")

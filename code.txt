@@ -1,5 +1,70 @@
-addi $r0, $r0, 12
-addi $r1, $r1, 23
-addi $r2, $r2, 24
-sw $r1, $r0, 0 
-lw $r3, $r0, 0
+ADDI $R5, $R5, 2 # Address 2
+SUB $R1, $R1, $R1
+ADDI $R1, $R1, 0 # space charcters counter
+SUB $R2, $R2, $R2
+ADDI $R2, $R2, 0 # charcters counter
+
+Read:
+LWL $R6, $R5, 0
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 8 # backspace character
+BREQ $R0, $R6, count
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 9 # tab character
+BREQ $R0, $R6, count
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 10 # line feed character
+BREQ $R0, $R6, count
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 12 # form feed character
+BREQ $R0, $R6, count
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 13 # carriage return character
+BREQ $R0, $R6, count
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 16
+ADD $R0, $R0, $R0 # SPACE character
+BREQ $R0, $R6, count
+
+SUB $R0, $R0, $R0
+ADDI $R0, $R0, 0 # Null character
+BREQ $R6, $R0, Stop
+
+ADDI $R5, $R5, 1
+ADDI $R2, $R2, 1
+JUMP Read
+
+count: 
+ADDI $R1, $R1, 1
+ADDI $R5, $R5, 1
+LWL $R7, $R5, 0
+BREQ $R6, $R7, SWAP
+JUMP Read
+
+SWAP:
+ADDI $R1, $R1, -1
+SUB $R3, $R3, $R3
+ADDI $R5, $R5, -1
+ADDI $R3, $R5, 0
+SUB $R0, $R0, $R0
+
+MOV:
+LWL $R6, $R3, 1
+SWL $R6, $R3, 0
+ADDI $R3, $R3, 1
+BRNE $R6, $R0, MOV
+JUMP Read
+
+Stop: 
+SUB $R0, $R0, $R0
+SWL $R2, $R0, 0
+SWL $R1, $R0, 1
+
+INF:
+JUMP INF
